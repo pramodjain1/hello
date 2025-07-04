@@ -34,4 +34,3 @@ jobs:
           echo "REACT_APP_LAUNCH_DATE=$LAUNCH_DATE" >> .env
           echo "Using launch date: $LAUNCH_DATE"
           cat .env
-      
