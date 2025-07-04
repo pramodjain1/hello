@@ -34,3 +34,17 @@ jobs:
           echo "REACT_APP_LAUNCH_DATE=$LAUNCH_DATE" >> .env
           echo "Using launch date: $LAUNCH_DATE"
           cat .env
+
+      - name: Build project
+        run: npm run build
+        
+      - name: Configure Git identity
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
