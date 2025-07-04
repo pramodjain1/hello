@@ -2,15 +2,23 @@ name: Build React App
 
 on:
   push:
-    branches: [main]
+    branches: [main]  # Trigger on push to main branch
+
+  workflow_dispatch:   # ✅ Manual trigger support
+    inputs:
+      launch_date:
+        description: 'Override launch date (YYYY-MM-DD)'
+        required: false
+        default: ''
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    environment: PRODUCTION
+    environment: prod  # Use GitHub Environment variables
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -20,10 +28,12 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Set env var from GitHub Environment
-        run: echo "REACT_APP_LAUNCH_DATE=${{ vars.LAUNCH_DATE }}" >> .env
+      - name: Set environment variable from input or GitHub environment
+        run: |
+          # Use workflow_dispatch input if provided, else fallback to GitHub Env var
+          LAUNCH_DATE=${{ github.event.inputs.launch_date || vars.LAUNCH_DATE }}
+          echo "REACT_APP_LAUNCH_DATE=$LAUNCH_DATE" >> .env
+          echo "Using launch date: $LAUNCH_DATE"
 
-      - name: Build
+      - name: Build React app
         run: npm run build
-
-      # Optional: deploy to GitHub Pages, Netlify, etc.
