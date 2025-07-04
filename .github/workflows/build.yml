@@ -30,13 +30,13 @@ jobs:
 
       - name: Set environment variable from input or GitHub environment
         run: |
-          # Use workflow_dispatch input if provided, else fallback to GitHub Env var
           LAUNCH_DATE=${{ github.event.inputs.launch_date || vars.LAUNCH_DATE }}
           echo "REACT_APP_LAUNCH_DATE=$LAUNCH_DATE" >> .env
           echo "Using launch date: $LAUNCH_DATE"
-
-      - name: Build React app
-        run: npm run build
-
-      - name: Deply React app
-        run: npm run deploy
+          cat .env
+      
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build
