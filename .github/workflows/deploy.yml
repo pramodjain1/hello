@@ -1,0 +1,28 @@
+name: Deploy React App to GitHub Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      launch_date:
+        description: 'Launch date (YYYY-MM-DD)'
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Deploy with launch date
+        env:
+          REACT_APP_LAUNCH_DATE: ${{ github.event.inputs.launch_date }}
+        run: npm run deploy
